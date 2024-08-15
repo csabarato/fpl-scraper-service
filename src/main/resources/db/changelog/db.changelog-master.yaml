@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: fpl-scraper-ddl-0.0.1
+      author: csarato
+      changes:
+        - createTable:
+           tableName: player
+           columns:
+             - column:
+                 name: id
+                 type: integer
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+             - column:
+                 name: name
+                 type: varchar(256)
+                 constraints:
+                   nullable: false
