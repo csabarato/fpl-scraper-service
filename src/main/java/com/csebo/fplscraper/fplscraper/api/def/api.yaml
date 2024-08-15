@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: Fantasy Premier League Scraper service API - OpenAPI 3.1.0
+  description: FPL Scraper API Spec
+  version: 1.0.0
+
+paths:
+  /player/data/update:
+    get:
+      tags:
+        - player
+      summary: Update players data by calling FPL server endpoint
+      operationId: updatePlayers
+      responses:
+        201:
+          description: 'Updated'
+
+        400:
+          description: 'invalid request'
+        500:
+          description: 'Server side error'
