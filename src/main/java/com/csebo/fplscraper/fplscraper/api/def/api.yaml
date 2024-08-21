@@ -19,3 +19,85 @@ paths:
           description: 'invalid request'
         500:
           description: 'Server side error'
+
+  /league/squads/{leagueId}:
+    get:
+      tags:
+        - league
+      summary: Returns the squads selected by participants by actual gameweek
+      operationId: getSquads
+      parameters:
+        - in: path
+          description: 'League ID which squads to query'
+          name: leagueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Returns the squads of the game participants'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SquadsResponseBody'
+  /league/participants/{leagueId}:
+    get:
+      tags:
+        - league
+      summary: Returns the participants of the league
+      operationId: getParticipants
+      parameters:
+        - in: path
+          description: 'League ID which participants to query'
+          name: leagueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Returns the participants of the league'
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+
+components:
+  schemas:
+    SquadsRequestBody:
+      type: object
+      properties:
+        playerIds:
+          type: array
+          items:
+            type: integer
+        gameweek:
+          type: number
+
+    SquadsResponseBody:
+      type: object
+      properties:
+        squadsMap:
+          $ref: '#/components/schemas/SquadModel'
+
+    SquadModel:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/PlayerModel'
+
+    PlayerModel:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        multiplier:
+          type: integer
+      required:
+        - id
+        - name
+        - multiplier
