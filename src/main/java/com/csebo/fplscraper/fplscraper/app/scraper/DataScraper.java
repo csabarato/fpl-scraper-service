@@ -8,11 +8,11 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
 
-public class PlayerScraper {
+public class DataScraper {
 
-    public static String scrapePlayersFromFplServer() {
+    public static String executeGetRequest(String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            ClassicHttpRequest request = new HttpGet("https://fantasy.premierleague.com/api/bootstrap-static/");
+            ClassicHttpRequest request = new HttpGet(url);
             return httpClient.execute(request,
                     (classicHttpResponse -> EntityUtils.toString(classicHttpResponse.getEntity())));
         } catch (IOException e){
