@@ -1,5 +1,6 @@
-package com.csebo.fplscraper.fplscraper.app.scraper;
+package com.csebo.fplscraper.fplscraper.app.utils;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -8,7 +9,11 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
 
-public class DataScraper {
+public class HttpRequestUtils {
+
+    private HttpRequestUtils() {
+        throw new NotImplementedException("Util class, should not be instantiated");
+    }
 
     public static String executeGetRequest(String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -16,7 +21,7 @@ public class DataScraper {
             return httpClient.execute(request,
                     (classicHttpResponse -> EntityUtils.toString(classicHttpResponse.getEntity())));
         } catch (IOException e){
-            throw new IllegalStateException();
+            throw new IllegalStateException(e.getMessage());
         }
     }
 }

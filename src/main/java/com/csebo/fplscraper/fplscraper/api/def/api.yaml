@@ -14,32 +14,33 @@ paths:
       responses:
         201:
           description: 'Updated'
-
         400:
           description: 'invalid request'
         500:
           description: 'Server side error'
 
-  /league/squads/{leagueId}:
-    get:
+  /league/picks:
+    post:
       tags:
         - league
-      summary: Returns the squads selected by participants by actual gameweek
-      operationId: getSquads
-      parameters:
-        - in: path
-          description: 'League ID which squads to query'
-          name: leagueId
-          required: true
-          schema:
-            type: integer
+      summary: Returns the players and participants, who selected them in the actual gameweek
+      operationId: getPicks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PicksRequestBody'
       responses:
         200:
-          description: 'Returns the squads of the game participants'
+          description: 'Returns the picks of participants'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SquadsResponseBody'
+                $ref: '#/components/schemas/PicksResponseBody'
+        400:
+          description: 'invalid request'
+        500:
+          description: 'Server side error'
   /league/participants/{leagueId}:
     get:
       tags:
@@ -62,10 +63,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
+        400:
+          description: 'invalid request'
+        500:
+          description: 'Server side error'
 
 components:
   schemas:
-    SquadsRequestBody:
+    PicksRequestBody:
       type: object
       properties:
         playerIds:
@@ -73,29 +78,44 @@ components:
           items:
             type: integer
         gameweek:
-          type: number
+          type: integer
 
-    SquadsResponseBody:
+    PicksResponseBody:
+      description: Returns a list, which contains players and a list which contains which participant selected them.
       type: object
       properties:
-        squadsMap:
-          $ref: '#/components/schemas/SquadModel'
+        picks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PicksModel'
 
-    SquadModel:
+    PicksModel:
+      description: Represents a list, which contains players and a list, which contains which participant selected them.
       type: object
-      additionalProperties:
-        type: array
-        items:
-          $ref: '#/components/schemas/PlayerModel'
+      properties:
+        playerId:
+          description: 'ID of the football player'
+          type: integer
+        playerName:
+          description: 'Name of the football player'
+          type: string
+        numberOfPicks:
+          description: 'How many times the football player were picked'
+          type: integer
+        pickedBy:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerPickModel'
 
-    PlayerModel:
+    PlayerPickModel:
+      description: 'Represents a single pick of a football player by a participant.'
       type: object
       properties:
         id:
+          description: 'ID of the participant'
           type: integer
-        name:
-          type: string
         multiplier:
+          description: 'Multiplier of the player'
           type: integer
       required:
         - id

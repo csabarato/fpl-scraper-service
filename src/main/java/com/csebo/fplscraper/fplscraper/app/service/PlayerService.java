@@ -1,16 +1,13 @@
 package com.csebo.fplscraper.fplscraper.app.service;
 
 import com.csebo.fplscraper.fplscraper.app.mapper.PlayerMapper;
+import com.csebo.fplscraper.fplscraper.app.repository.PlayerEntity;
 import com.csebo.fplscraper.fplscraper.app.repository.PlayerRepository;
-import com.csebo.fplscraper.fplscraper.app.scraper.DataScraper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.csebo.fplscraper.fplscraper.app.utils.HttpRequestUtils;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class PlayerService {
@@ -22,7 +19,13 @@ public class PlayerService {
     }
 
     public void savePlayersFromFplServer() {
-        String jsonResponse = DataScraper.executeGetRequest("https://fantasy.premierleague.com/api/bootstrap-static/");
+        String jsonResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/bootstrap-static/");
         playerRepository.saveAll(PlayerMapper.mapJsonToPlayerEntity(jsonResponse));
+    }
+
+    public String getNameById(Integer id){
+        Optional<PlayerEntity> playerEntityOptional = playerRepository.findById(id);
+        PlayerEntity playerEntity = playerEntityOptional.orElseThrow(() -> new EntityNotFoundException("Entity not found with ID: "+ id));
+        return playerEntity.getName();
     }
 }
