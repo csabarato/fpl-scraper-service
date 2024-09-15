@@ -14,7 +14,7 @@ services:
 
   # Define the Spring Boot service
   app:
-    build: .
+    image: cseboo/fpl-scraper:0.0.1
     ports:
       - "8080:8080"
     depends_on:
@@ -24,8 +24,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    volumes:
-      - ./target:/app
 
 # Define named volumes for persistent storage
 volumes:
