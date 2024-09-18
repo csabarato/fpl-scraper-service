@@ -41,28 +41,27 @@ paths:
           description: 'invalid request'
         500:
           description: 'Server side error'
-  /league/participants/{leagueId}:
+  /league/data/{leagueId}:
     get:
       tags:
         - league
-      summary: Returns the participants of the league
-      operationId: getParticipants
+      summary: Returns basic datas of the league
+      operationId: getLeagueData
       parameters:
         - in: path
-          description: 'League ID which participants to query'
+          description: 'League ID which league to query'
           name: leagueId
           required: true
           schema:
             type: integer
       responses:
         200:
-          description: 'Returns the participants of the league'
+          description: 'Returns basic data of the league'
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: '#/components/schemas/LeagueDataModel'
+
         400:
           description: 'invalid request'
         500:
@@ -121,3 +120,14 @@ components:
         - id
         - name
         - multiplier
+
+    LeagueDataModel:
+      description: 'Contains basic data of the league'
+      type: object
+      properties:
+        leagueName:
+          description: 'Name of the league'
+          type: string
+        participants:
+          additionalProperties:
+            type: string
