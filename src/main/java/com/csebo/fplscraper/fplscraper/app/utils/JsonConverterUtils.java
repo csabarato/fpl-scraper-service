@@ -15,6 +15,16 @@ public class JsonConverterUtils {
         throw new NotImplementedException("Util class, should not be instantiated");
     }
 
+    public static String extractLeagueNameFromJson(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonRoot = objectMapper.readTree(json);
+            return jsonRoot.get("league").get("name").textValue();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract league name from json: " + json, e);
+        }
+    }
+
     public static Map<String, String> extractParticipantsFromJson(String json) {
 
         Map<String, String> participants = new HashMap<>();

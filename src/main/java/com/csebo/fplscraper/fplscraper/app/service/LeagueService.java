@@ -1,13 +1,13 @@
 package com.csebo.fplscraper.fplscraper.app.service;
 import com.csebo.fplscraper.fplscraper.app.utils.HttpRequestUtils;
+import org.SwaggerCodeGenExample.model.LeagueDataModel;
 import org.SwaggerCodeGenExample.model.PicksModel;
 import org.SwaggerCodeGenExample.model.PlayerPickModel;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.csebo.fplscraper.fplscraper.app.utils.JsonConverterUtils.extractParticipantsFromJson;
-import static com.csebo.fplscraper.fplscraper.app.utils.JsonConverterUtils.collectPicksFromJson;
+import static com.csebo.fplscraper.fplscraper.app.utils.JsonConverterUtils.*;
 
 @Service
 public class LeagueService {
@@ -18,9 +18,13 @@ public class LeagueService {
         this.playerService = playerService;
     }
 
-    public Map<String, String> scrapeParticipantsFromFplServer(Integer leagueId){
+    public LeagueDataModel scrapeLeagueDataFromFplServer(Integer leagueId) {
+        LeagueDataModel leagueDataModel = new LeagueDataModel();
         String jsonResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/leagues-classic/" + leagueId + "/standings");
-        return extractParticipantsFromJson(jsonResponse);
+
+        leagueDataModel.setLeagueName(extractLeagueNameFromJson(jsonResponse));
+        leagueDataModel.setParticipants(extractParticipantsFromJson(jsonResponse));
+        return leagueDataModel;
     }
 
     public List<PicksModel> scrapePicksFromFplServer(List<Integer> participantIds, Integer gameweek){
