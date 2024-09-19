@@ -19,7 +19,12 @@ public class HttpRequestUtils {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             ClassicHttpRequest request = new HttpGet(url);
             return httpClient.execute(request,
-                    (classicHttpResponse -> EntityUtils.toString(classicHttpResponse.getEntity())));
+                    (classicHttpResponse ->{
+                        if (classicHttpResponse.getCode() != 200) {
+                            throw new IllegalStateException("Failed to execute GET request, status code " + classicHttpResponse.getCode());
+                        }
+                        return EntityUtils.toString(classicHttpResponse.getEntity());
+                    }));
         } catch (IOException e){
             throw new IllegalStateException(e.getMessage());
         }
