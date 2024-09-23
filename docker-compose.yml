@@ -25,6 +25,17 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
+  # Define the Flutter web application service
+  client:
+    image: cseboo/fpl-scraper-client:0.0.1
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    environment:
+      - FLUTTER_ENV=production
+
+
 # Define named volumes for persistent storage
 volumes:
   postgres-data:
