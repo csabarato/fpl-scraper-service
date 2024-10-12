@@ -5,15 +5,15 @@ info:
   version: 1.0.0
 
 paths:
-  /player/data/update:
+  /data/update/all:
     get:
       tags:
-        - player
-      summary: Update players data by calling FPL server endpoint
-      operationId: updatePlayers
+        - data
+      summary: "Update stored data by calling FPL server endpoint. Currently stores the following data: players, gameweeks."
+      operationId: updateAll
       responses:
         201:
-          description: 'Updated'
+          description: 'Updated players and gameweek deadlines.'
         400:
           description: 'invalid request'
         500:

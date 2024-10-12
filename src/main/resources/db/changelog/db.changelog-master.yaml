@@ -17,3 +17,21 @@ databaseChangeLog:
                  type: varchar(256)
                  constraints:
                    nullable: false
+  - changeSet:
+      id: fpl-scraper-ddl-0.0.2
+      author: csarato
+      changes:
+        - createTable:
+            tableName: gameweek
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: deadline_time
+                  type: datetime
+                  constraints:
+                    nullable: false

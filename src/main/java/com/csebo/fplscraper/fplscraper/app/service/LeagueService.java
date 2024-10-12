@@ -13,9 +13,11 @@ import static com.csebo.fplscraper.fplscraper.app.utils.JsonConverterUtils.*;
 public class LeagueService {
 
     private final PlayerService playerService;
+    private final GameweekService gameweekService;
 
-    public LeagueService(PlayerService playerService){
+    public LeagueService(PlayerService playerService, GameweekService gameweekService){
         this.playerService = playerService;
+        this.gameweekService = gameweekService;
     }
 
     public LeagueDataModel scrapeLeagueDataFromFplServer(Integer leagueId) {
@@ -28,6 +30,9 @@ public class LeagueService {
     }
 
     public List<PicksModel> scrapePicksFromFplServer(List<Integer> participantIds, Integer gameweek){
+
+        if (gameweek == null) gameweek = gameweekService.getCurrentGameweek();
+
         Map<Integer,List<PlayerPickModel>> picksMap = new HashMap<>();
         for (Integer participantId : participantIds) {
             String jsonResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/entry/" + participantId + "/event/"+ gameweek +"/picks");
