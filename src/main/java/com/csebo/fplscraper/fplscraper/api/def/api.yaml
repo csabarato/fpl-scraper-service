@@ -23,7 +23,7 @@ paths:
     post:
       tags:
         - league
-      summary: Returns the players and participants, who selected them in the actual gameweek
+      summary: Returns the players and managers, who selected them in the actual gameweek
       operationId: getPicks
       requestBody:
         content:
@@ -32,7 +32,7 @@ paths:
               $ref: '#/components/schemas/PicksRequestBody'
       responses:
         200:
-          description: 'Returns the picks of participants'
+          description: 'Returns the picks of managers'
           content:
             application/json:
               schema:
@@ -60,7 +60,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LeagueDataModel'
+                $ref: '#/components/schemas/LeagueDataResponseBody'
 
         400:
           description: 'invalid request'
@@ -80,16 +80,20 @@ components:
           type: integer
 
     PicksResponseBody:
-      description: Returns a list, which contains players and a list which contains which participant selected them.
+      description: Returns a map with managers - selected captains entries. Returns a list of players and a list of managers, who selected the actual player.
       type: object
       properties:
+        captainPicks:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CaptainPickDetail'
         picks:
           type: array
           items:
-            $ref: '#/components/schemas/PicksModel'
+            $ref: '#/components/schemas/PlayerPicksModel'
 
-    PicksModel:
-      description: Represents a list, which contains players and a list, which contains which participant selected them.
+    PlayerPicksModel:
+      description: Returns a list of players and a list of managers, who selected the actual player.
       type: object
       properties:
         playerId:
@@ -104,14 +108,14 @@ components:
         pickedBy:
           type: array
           items:
-            $ref: '#/components/schemas/PlayerPickModel'
+            $ref: '#/components/schemas/ManagerPickModel'
 
-    PlayerPickModel:
-      description: 'Represents a single pick of a football player by a participant.'
+    ManagerPickModel:
+      description: 'Represents a single pick of a football player by a manager.'
       type: object
       properties:
         id:
-          description: 'ID of the participant'
+          description: 'ID of the manager'
           type: integer
         multiplier:
           description: 'Multiplier of the player'
@@ -121,13 +125,24 @@ components:
         - name
         - multiplier
 
-    LeagueDataModel:
+    CaptainPickDetail:
+      type: object
+      properties:
+        playerName:
+          type: string
+        multiplier:
+          type: integer
+      required:
+        - playerName
+        - multiplier
+
+    LeagueDataResponseBody:
       description: 'Contains basic data of the league'
       type: object
       properties:
         leagueName:
           description: 'Name of the league'
           type: string
-        participants:
+        managers:
           additionalProperties:
             type: string
