@@ -4,22 +4,25 @@ import com.csebo.fplscraper.fplscraper.app.utils.HttpRequestUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.SwaggerCodeGenExample.model.CaptainPickDetail;
 import org.SwaggerCodeGenExample.model.ManagerPickModel;
 import org.SwaggerCodeGenExample.model.PlayerPicksModel;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 @Service
 @Getter
+@Slf4j
 public class LeagueDataScraperService {
 
     private final PlayerService playerService;
 
     private List<PlayerPicksModel> playerPicks = new ArrayList<>();
-    private final Map<Integer, List<ManagerPickModel>> picksMap = new HashMap<>();
-    private final Map<String, CaptainPickDetail> captainsMap = new HashMap<>();
+    private final ConcurrentHashMap<String, CaptainPickDetail> captainsMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, List<ManagerPickModel>> picksMap = new ConcurrentHashMap<>();
 
     public LeagueDataScraperService(PlayerService playerService) {
         this.playerService = playerService;
@@ -51,10 +54,29 @@ public class LeagueDataScraperService {
     }
 
     public void scrapeAllManagerPicks(List<Integer> managerIds, int gameweek) {
+        if (!picksMap.isEmpty()) picksMap.clear();
+        if (!captainsMap.isEmpty()) captainsMap.clear();
+
+        List<Thread> threads = new ArrayList<>();
+
         for (Integer managerId : managerIds) {
-            String playerPicksResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/entry/" + managerId + "/event/"+ gameweek +"/picks");
-            scrapePicksOfManager(managerId, playerPicksResponse);
+            Thread thread = Thread.startVirtualThread(() -> {
+                    String playerPicksResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/entry/" + managerId + "/event/" + gameweek + "/picks");
+                    scrapePicksOfManager(managerId, playerPicksResponse);
+                }
+            );
+            threads.add(thread);
         }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(), e);
+                Thread.currentThread().interrupt();
+            }
+        }
+
         playerPicks = mapPicksMapToListOfPicksModelAndSort(picksMap);
     }
 
