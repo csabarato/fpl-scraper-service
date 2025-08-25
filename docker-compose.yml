@@ -26,29 +26,28 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   # Define the Flutter web application service
-  client:
-    image: cseboo/fpl-scraper-client:0.0.1
-    ports:
-      - "8081:8081"
-    depends_on:
-      - app
-    environment:
-      - FLUTTER_ENV=production
+# client:
+#   image: cseboo/fpl-scraper-client:0.0.1
+#   ports:
+#     - "8081:8081"
+#   depends_on:
+#     - app
+#   environment:
+#     - FLUTTER_ENV=production
 
   # Define the Nginx reverse proxy service
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/live/fplpicks.online/fullchain.pem:/etc/ssl/certs/fullchain.pem
-      - /etc/letsencrypt/live/fplpicks.online/privkey.pem:/etc/ssl/certs/privkey.pem
-    depends_on:
-      - app
-      - client
-
+# nginx:
+#   image: nginx:latest
+#   ports:
+#     - "80:80"
+#     - "443:443"
+#   volumes:
+#     - ./nginx.conf:/etc/nginx/nginx.conf
+#     - /etc/letsencrypt/live/fplpicks.online/fullchain.pem:/etc/ssl/certs/fullchain.pem
+#     - /etc/letsencrypt/live/fplpicks.online/privkey.pem:/etc/ssl/certs/privkey.pem
+#   depends_on:
+#     - app
+#     - client
 # Define named volumes for persistent storage
 volumes:
   postgres-data:

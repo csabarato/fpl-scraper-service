@@ -1,6 +1,6 @@
 package com.csebo.fplscraper.fplscraper.app.service;
 
-import com.csebo.fplscraper.fplscraper.app.mapper.DataMapper;
+import com.csebo.fplscraper.fplscraper.app.mapper.JsonDataMapper;
 import com.csebo.fplscraper.fplscraper.app.repository.GameweekRepository;
 import com.csebo.fplscraper.fplscraper.app.repository.PlayerEntity;
 import com.csebo.fplscraper.fplscraper.app.repository.PlayerRepository;
@@ -24,13 +24,24 @@ public class PlayerService {
     public void saveDataFromFplServer() {
         String jsonResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/bootstrap-static/");
 
-        playerRepository.saveAll(DataMapper.mapJsonToPlayerEntity(jsonResponse));
-        gameweekRepository.saveAll(DataMapper.mapJsonToGameweekEntity(jsonResponse));
+        playerRepository.saveAll(JsonDataMapper.mapJsonToPlayerEntities(jsonResponse));
+        gameweekRepository.saveAll(JsonDataMapper.mapJsonToGameweekEntities(jsonResponse));
     }
 
     public String getNameById(Integer id){
         Optional<PlayerEntity> playerEntityOptional = playerRepository.findById(id);
-        PlayerEntity playerEntity = playerEntityOptional.orElseThrow(() -> new EntityNotFoundException("Entity not found with ID: "+ id));
+        PlayerEntity playerEntity = playerEntityOptional.orElseGet(() -> fetchMissingPlayerDataFromFplServer(id));
         return playerEntity.getName();
+    }
+
+    private PlayerEntity fetchMissingPlayerDataFromFplServer(Integer id) {
+
+        String jsonResponse = HttpRequestUtils.executeGetRequest("https://fantasy.premierleague.com/api/bootstrap-static/");
+
+        PlayerEntity playerEntity = JsonDataMapper.findPlayerByIdInJson(jsonResponse, id)
+                .orElseThrow(()
+                        -> new EntityNotFoundException("Player data not found after fetching from FPL server for ID: " + id));
+
+        return playerRepository.save(playerEntity);
     }
 }

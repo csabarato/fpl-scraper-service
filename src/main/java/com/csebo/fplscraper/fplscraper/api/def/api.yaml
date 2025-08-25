@@ -78,6 +78,8 @@ components:
             type: integer
         gameweek:
           type: integer
+      required:
+        - playerIds
 
     PicksResponseBody:
       description: Returns a map with managers - selected captains entries. Returns a list of players and a list of managers, who selected the actual player.

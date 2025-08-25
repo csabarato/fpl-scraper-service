@@ -10,15 +10,16 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class DataMapper {
+public class JsonDataMapper {
 
-    private DataMapper(){
+    private JsonDataMapper(){
         // Util class, must not be implemented;
         throw new NotImplementedException();
     }
 
-    public static List<PlayerEntity> mapJsonToPlayerEntity(String json) {
+    public static List<PlayerEntity> mapJsonToPlayerEntities(String json) {
         try {
             List<PlayerEntity> playerEntities = new ArrayList<>();
 
@@ -37,7 +38,29 @@ public class DataMapper {
         }
     }
 
-    public static List<GameweekEntity> mapJsonToGameweekEntity(String json) {
+    public static Optional<PlayerEntity> findPlayerByIdInJson(String json, int playerId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(json);
+            JsonNode playerElementsJsonArray = node.get("elements");
+
+            if (playerElementsJsonArray != null) {
+                for (JsonNode element : playerElementsJsonArray) {
+                    if (element.get("id").asInt() == playerId) {
+                        PlayerEntity playerEntity = new PlayerEntity();
+                        playerEntity.setId(element.get("id").asInt());
+                        playerEntity.setName(element.get("web_name").asText());
+                        return Optional.of(playerEntity);
+                    }
+                }
+            }
+            return Optional.empty();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<GameweekEntity> mapJsonToGameweekEntities(String json) {
         try {
             List<GameweekEntity> gameweekEntities = new ArrayList<>();
 

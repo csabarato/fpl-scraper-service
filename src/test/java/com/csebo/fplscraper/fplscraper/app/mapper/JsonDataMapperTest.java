@@ -8,12 +8,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DataMapperTest {
+class JsonDataMapperTest {
 
     @Test
-    void mapJsonToGameweekEntity() {
+    void mapJsonToGameweekEntities() {
 
-        List<GameweekEntity> entities = DataMapper.mapJsonToGameweekEntity(
+        List<GameweekEntity> entities = JsonDataMapper.mapJsonToGameweekEntities(
                 """
                 {
                 "events": [
