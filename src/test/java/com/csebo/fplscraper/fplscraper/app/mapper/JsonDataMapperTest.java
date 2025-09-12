@@ -26,7 +26,7 @@ class JsonDataMapperTest {
                         ]
                 }""");
 
-        assertEquals(1, entities.get(0).getGameweekNum());
-        assertEquals(LocalDateTime.of(2024,10,19,10,0,0), entities.get(0).getDeadlineTime());
+        assertEquals(1, entities.getFirst().getGameweekNum());
+        assertEquals(LocalDateTime.of(2024,10,19,10,0,0), entities.getFirst().getDeadlineTime());
     }
 }

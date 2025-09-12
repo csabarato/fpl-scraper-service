@@ -1,6 +1,7 @@
 package com.csebo.fplscraper.fplscraper.app.controller;
 
 import com.csebo.fplscraper.fplscraper.app.service.LeagueService;
+import com.csebo.fplscraper.fplscraper.app.service.ManagerPickService;
 import org.SwaggerCodeGenExample.api.LeagueApi;
 import org.SwaggerCodeGenExample.model.LeagueDataResponseBody;
 import org.SwaggerCodeGenExample.model.PicksRequestBody;
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Controller;
 public class LeagueController implements LeagueApi {
 
     private final LeagueService leagueService;
+    private final ManagerPickService managerPickService;
 
-    public LeagueController(LeagueService leagueService) {
+    public LeagueController(LeagueService leagueService, ManagerPickService managerPickService) {
         this.leagueService = leagueService;
+        this.managerPickService = managerPickService;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class LeagueController implements LeagueApi {
         headers.setPragma("no-cache");
         headers.setExpires(0);
 
-        return new ResponseEntity<>(leagueService.getPicksFromFplServer(picksRequestBody.getPlayerIds(),
+        return new ResponseEntity<>(managerPickService.getPicksResponseBody(picksRequestBody.getPlayerIds(),
                 picksRequestBody.getGameweek()), headers, HttpStatus.OK);
     }
 }

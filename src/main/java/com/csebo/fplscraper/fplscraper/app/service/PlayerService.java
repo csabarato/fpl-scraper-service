@@ -28,10 +28,9 @@ public class PlayerService {
         gameweekRepository.saveAll(JsonDataMapper.mapJsonToGameweekEntities(jsonResponse));
     }
 
-    public String getNameById(Integer id){
+    public PlayerEntity getById(Integer id){
         Optional<PlayerEntity> playerEntityOptional = playerRepository.findById(id);
-        PlayerEntity playerEntity = playerEntityOptional.orElseGet(() -> fetchMissingPlayerDataFromFplServer(id));
-        return playerEntity.getName();
+        return playerEntityOptional.orElseGet(() -> fetchMissingPlayerDataFromFplServer(id));
     }
 
     private PlayerEntity fetchMissingPlayerDataFromFplServer(Integer id) {

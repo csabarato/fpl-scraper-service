@@ -32,16 +32,17 @@ class PlayerServiceTest {
     private PlayerService playerService;
 
     @Test
-    void getNameByIdReturnsPlayerNameWhenPlayerExistsInDatabase() {
+    void getByIdReturnsPlayerWhenPlayerExistsInDatabase() {
         PlayerEntity player = new PlayerEntity();
         player.setId(1);
         player.setName("Salah");
 
         when(playerRepository.findById(1)).thenReturn(Optional.of(player));
 
-        String result = playerService.getNameById(1);
+        PlayerEntity result = playerService.getById(1);
 
-        assertEquals("Salah", result);
+        assertEquals(1, result.getId());
+        assertEquals("Salah", result.getName());
         verify(playerRepository).findById(1);
         verifyNoMoreInteractions(playerRepository);
     }
@@ -78,9 +79,11 @@ class PlayerServiceTest {
             mapperMock.when(() -> JsonDataMapper.findPlayerByIdInJson(jsonResponse, 1))
                      .thenReturn(Optional.of(fetchedPlayer));
 
-            String result = playerService.getNameById(1);
+            PlayerEntity result = playerService.getById(1);
 
-            assertEquals("Salah", result);
+            assertEquals(1, result.getId());
+            assertEquals("Salah", result.getName());
+
             verify(playerRepository).findById(1);
             verify(playerRepository).save(fetchedPlayer);
         }
@@ -105,7 +108,7 @@ class PlayerServiceTest {
                      .thenReturn(Optional.empty());
 
             EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> playerService.getNameById(999));
+                () -> playerService.getById(999));
 
             assertTrue(exception.getMessage().contains("Player data not found"));
             verify(playerRepository).findById(999);
@@ -195,9 +198,10 @@ class PlayerServiceTest {
             mapperMock.when(() -> JsonDataMapper.findPlayerByIdInJson(jsonResponse, 5))
                      .thenReturn(Optional.of(fetchedPlayer));
 
-            String result = playerService.getNameById(5);
+            PlayerEntity result = playerService.getById(5);
 
-            assertEquals("Mane", result);
+            assertEquals(5, result.getId());
+            assertEquals("Mane", result.getName());
             verify(playerRepository).save(fetchedPlayer);
         }
     }

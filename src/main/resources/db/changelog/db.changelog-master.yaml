@@ -35,3 +35,37 @@ databaseChangeLog:
                   type: datetime
                   constraints:
                     nullable: false
+  - changeSet:
+      id: create-manger-pick-table
+      author: csarato
+      changes:
+        - createTable:
+            tableName: manger_pick
+            columns:
+              - column:
+                  name: manager_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gameweek
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: player_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: multiplier
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_captain
+                  type: boolean
+        - addPrimaryKey:
+            tableName: manger_pick
+            columnNames: manager_id, gameweek, player_id
+            constraintName: pk_manger_pick
