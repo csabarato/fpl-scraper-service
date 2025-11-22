@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "cseboo/fpl-picks-service:latest"
+    "Name": "cseboo/fpl-picks-service:2.0.1"
   },
   "Ports": [
     {

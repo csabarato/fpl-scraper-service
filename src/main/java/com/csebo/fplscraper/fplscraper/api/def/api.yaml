@@ -41,6 +41,31 @@ paths:
           description: 'invalid request'
         500:
           description: 'Server side error'
+
+  /league/transfers:
+    post:
+      tags:
+        - league
+      summary: Returns the transfers (in and out) of every manager in the requested gameweek
+      operationId: getTransfers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PicksRequestBody'
+      responses:
+        200:
+          description: 'Returns the transfers of managers in the requested gameweek'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransfersResponseBody'
+        400:
+          description: 'invalid request'
+        500:
+          description: 'Server side error'
+
+
   /league/data/{leagueId}:
     get:
       tags:
@@ -94,6 +119,17 @@ components:
           items:
             $ref: '#/components/schemas/PlayerPicksModel'
 
+    TransfersResponseBody:
+      description: Returns a the in-out transfers of each manager.
+      type: object
+      properties:
+        transfers:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/TransferredPlayerModel'
+
     PlayerPicksModel:
       description: Returns a list of players and a list of managers, who selected the actual player.
       type: object
@@ -111,6 +147,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ManagerPickModel'
+
+    TransferredPlayerModel:
+      type: object
+      properties:
+        playerName:
+          type: string
+        in:
+          type: boolean
+      required:
+        - playerName
+        - in
 
     ManagerPickModel:
       description: 'Represents a single pick of a football player by a manager.'

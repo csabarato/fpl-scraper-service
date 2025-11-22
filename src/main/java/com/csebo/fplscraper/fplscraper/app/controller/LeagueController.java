@@ -6,6 +6,7 @@ import org.SwaggerCodeGenExample.api.LeagueApi;
 import org.SwaggerCodeGenExample.model.LeagueDataResponseBody;
 import org.SwaggerCodeGenExample.model.PicksRequestBody;
 import org.SwaggerCodeGenExample.model.PicksResponseBody;
+import org.SwaggerCodeGenExample.model.TransfersResponseBody;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,18 @@ public class LeagueController implements LeagueApi {
         headers.setExpires(0);
 
         return new ResponseEntity<>(managerPickService.getPicksResponseBody(picksRequestBody.getPlayerIds(),
+                picksRequestBody.getGameweek()), headers, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<TransfersResponseBody> getTransfers(PicksRequestBody picksRequestBody) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl("no-store, no-cache, must-revalidate, max-age=0");
+        headers.setPragma("no-cache");
+        headers.setExpires(0);
+
+        return new ResponseEntity<>(managerPickService.getTransfersResponseBody(picksRequestBody.getPlayerIds(),
                 picksRequestBody.getGameweek()), headers, HttpStatus.OK);
     }
 }
